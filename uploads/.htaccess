@@ -1,0 +1,4 @@
+# Allow access to image files
+<FilesMatch "\.(jpg|jpeg|png|gif)$">
+    Require all granted
+</FilesMatch>
