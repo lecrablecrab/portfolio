@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Arty AI Showcase</title>
+  <title>AI Showcase</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,23 +16,23 @@
       align-items: center;
       min-height: 100vh;
       margin: 0;
-      background-size: cover; /* Cover the entire page */
-      background-position: center; /* Center the background image */
-      color: white; /* Text color for better visibility */
+      background-size: cover;
+      background-position: center;
+      color: white;
     }
     .title {
-      font-size: 2.5rem; /* Large font size for the title */
-      margin-bottom: 20px; /* Space between title and grid */
-      text-align: center; /* Center the title */
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Text shadow for better readability */
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* 2 columns */
-      grid-gap: 20px; /* Space between images */
-      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
       padding: 20px;
-      max-width: 60%; /* Make the grid larger */
+      max-width: 60%;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
@@ -44,20 +44,46 @@
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       overflow: hidden;
+      cursor: pointer; /* Change cursor to pointer */
     }
     .grid-item img {
       max-width: 100%;
       max-height: 100%;
       object-fit: cover;
     }
+    .overlay {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* On top of other content */
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    }
+    .overlay img {
+      max-width: 90%;
+      max-height: 90%;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+    }
     footer {
       margin-top: 20px;
       text-align: center;
       font-size: 0.9rem;
-      color: white; /* Change text color to white */
-      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-      padding: 10px; /* Add some padding */
-      border-radius: 8px; /* Rounded corners */
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 8px;
     }
     footer a {
       color: #007BFF;
@@ -71,6 +97,11 @@
 <body>
   <h1 class="title">ART and AI by lecrab</h1>
   <div class="grid" id="imageGrid"></div>
+
+  <div class="overlay" id="imageOverlay">
+    <span class="close-btn" id="closeOverlay">&times;</span>
+    <img id="overlayImage" src="" alt="Overlay Image">
+  </div>
 
   <footer>
     <p>© <span id="currentYear"></span> Servaas Schrama. All rights reserved. v0.1 BETA</p>
@@ -115,9 +146,26 @@
         img.src = `uploads/${imageName}`;
         img.alt = `Random Image`;
 
+        // Add click event to open overlay
+        gridItem.onclick = () => openOverlay(`uploads/${imageName}`);
+
         gridItem.appendChild(img);
         grid.appendChild(gridItem);
       });
+    }
+
+    // Function to open the overlay
+    function openOverlay(imageSrc) {
+      const overlay = document.getElementById('imageOverlay');
+      const overlayImage = document.getElementById('overlayImage');
+      overlayImage.src = imageSrc;
+      overlay.style.display = 'flex'; // Show overlay
+    }
+
+    // Function to close the overlay
+    function closeOverlay() {
+      const overlay = document.getElementById('imageOverlay');
+      overlay.style.display = 'none'; // Hide overlay
     }
 
     // Set the current year in the footer
@@ -130,6 +178,9 @@
     // Initialize the page
     loadImages();
     setCurrentYear();
+
+    // Event listener for closing the overlay
+    document.getElementById('closeOverlay').onclick = closeOverlay;
   </script>
 </body>
 </html>
