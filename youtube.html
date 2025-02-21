@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>YouTube Video Grid</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .title {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+      grid-gap: 20px;
+      padding: 20px;
+      width: 90%;
+      max-width: 1200px;
+    }
+    .grid-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .grid-item iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+    }
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    footer a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title">Latest Videos from My YouTube Channel</h1>
+  <div class="grid" id="videoGrid"></div>
+
+  <footer>
+    <p>© <span id="currentYear"></span> Servaas Schrama. All rights reserved. v0.1 BETA</p>
+    <p>
+      <a href="https://servaasschrama.com" target="_blank">Visit my website</a> |
+      <a href="https://x.com/lecrabdotcom" target="_blank">Follow me on X</a>
+    </p>
+  </footer>
+
+  <script>
+    const API_KEY = 'YOUR_API_KEY'; // Replace with your YouTube API key
+    const CHANNEL_ID = 'YOUR_CHANNEL_ID'; // Replace with your YouTube channel ID
+    const videoGrid = document.getElementById('videoGrid');
+
+    // Fetch the latest videos from the YouTube channel
+    async function fetchVideos() {
+      const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=6`);
+      const data = await response.json();
+
+      if (data.items) {
+        data.items.forEach(item => {
+          if (item.id.videoId) {
+            const videoId = item.id.videoId;
+            const videoTitle = item.snippet.title;
+
+            // Create a grid item for each video
+            const gridItem = document.createElement('div');
+            gridItem.className = 'grid-item';
+
+            // Embed the YouTube video
+            gridItem.innerHTML = `
+              <iframe 
+                src="https://www.youtube.com/embed/${videoId}" 
+                title="${videoTitle}" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+              </iframe>
+            `;
+
+            videoGrid.appendChild(gridItem);
+          }
+        });
+      } else {
+        videoGrid.innerHTML = '<p>No videos found.</p>';
+      }
+    }
+
+    // Set the current year in the footer
+    function setCurrentYear() {
+      const yearSpan = document.getElementById('currentYear');
+      const currentYear = new Date().getFullYear();
+      yearSpan.textContent = currentYear;
+    }
+
+    // Initialize the page
+    fetchVideos();
+    setCurrentYear();
+  </script>
+</body>
+</html>
